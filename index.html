@@ -1,0 +1,774 @@
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --black: #000000; --dark: #0a0a0a; --dark2: #111111;
+    --cyan: #00d4e8; --cyan-dark: #00aabf; --cyan-pale: rgba(0,212,232,0.1);
+    --pink: #e8407a; --orange: #f5a623;
+    --gradient: linear-gradient(135deg, #e8407a 0%, #f5a623 100%);
+    --white: #ffffff; --grey: #888888; --light-grey: #cccccc;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 56px;
+    background: rgba(0,0,0,0.88); backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(0,212,232,0.12); transition: border-color 0.3s;
+  }
+  nav.scrolled { border-bottom-color: rgba(0,212,232,0.3); }
+  .logo-img { height: 80px; width: auto; display: block; }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--light-grey);
+    text-decoration: none; transition: color 0.2s; position: relative;
+  }
+  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 2px; background: var(--cyan); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--black); background: var(--cyan); padding: 10px 28px;
+    text-decoration: none; clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--cyan-dark); }
+
+  /* ── HAMBURGER MENU MOBILE ── */
+  .hamburger {
+    display: none; flex-direction: column; justify-content: center; gap: 5px;
+    width: 36px; height: 36px; cursor: pointer; background: none; border: none;
+    padding: 4px; z-index: 200;
+  }
+  .hamburger span {
+    display: block; width: 100%; height: 2px; background: var(--cyan);
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile overlay menu */
+  .mobile-menu {
+    display: none; position: fixed; inset: 0; z-index: 150;
+    background: rgba(0,0,0,0.97); backdrop-filter: blur(20px);
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 32px; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .mobile-menu.open { opacity: 1; pointer-events: all; }
+  .mobile-menu a {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.1em;
+    color: var(--white); text-decoration: none; transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--cyan); }
+  .mobile-menu .mob-cta {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--black); background: var(--cyan); padding: 14px 36px;
+    clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+    margin-top: 8px;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; display: flex; align-items: center;
+    position: relative; overflow: hidden; padding: 130px 56px 80px;
+  }
+  .hero-blobs { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(90px); }
+  .b1 { width: 700px; height: 700px; background: var(--cyan); opacity: 0.12; top: -200px; right: -180px; }
+  .b2 { width: 500px; height: 500px; background: var(--pink); opacity: 0.08; bottom: -100px; left: 25%; }
+  .b3 { width: 350px; height: 350px; background: var(--orange); opacity: 0.07; top: 15%; right: 20%; }
+  .hero-content { position: relative; z-index: 2; max-width: 820px; animation: heroIn 1s cubic-bezier(0.22,1,0.36,1) both; }
+  @keyframes heroIn { from { opacity:0; transform:translateY(50px); } to { opacity:1; transform:translateY(0); } }
+  .eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cyan); margin-bottom: 28px; display: flex; align-items: center; gap: 12px; }
+  .eyebrow::before { content: ''; width: 32px; height: 2px; background: var(--cyan); display: block; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 9vw, 9rem); line-height: 0.92; letter-spacing: 0.02em; color: var(--white); margin-bottom: 28px; }
+  .grad { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .outline { -webkit-text-stroke: 2px var(--cyan); color: transparent; }
+  .hero-sub { font-size: 1rem; line-height: 1.85; color: var(--grey); max-width: 520px; margin-bottom: 48px; }
+  .hero-btns { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--black);
+    background: var(--gradient); padding: 16px 44px; text-decoration: none;
+    clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+    transition: opacity 0.2s, transform 0.2s; display: inline-block;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+  .btn-outline {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--cyan);
+    border: 2px solid var(--cyan); padding: 14px 36px; text-decoration: none;
+    clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { background: var(--cyan); color: var(--black); }
+  .hero-stats { display: flex; gap: 48px; margin-top: 60px; padding-top: 36px; border-top: 1px solid rgba(255,255,255,0.07); }
+  .hnum { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; display: block; line-height: 1; }
+  .hlabel { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); margin-top: 4px; display: block; }
+  .scroll-hint { position: absolute; bottom: 36px; left: 56px; display: flex; align-items: center; gap: 12px; }
+  .scroll-hint span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--grey); writing-mode: vertical-lr; }
+  .vline { width: 1px; height: 48px; background: linear-gradient(to bottom, var(--cyan), transparent); animation: vp 2s ease-in-out infinite; }
+  @keyframes vp { 0%,100%{opacity:1}50%{opacity:0.2} }
+
+  /* ── MARQUEE ── */
+  .marquee-band { background: var(--cyan); padding: 13px 0; overflow: hidden; white-space: nowrap; }
+  .marquee-inner { display: inline-flex; animation: marquee 20s linear infinite; }
+  .marquee-inner:hover { animation-play-state: paused; }
+  .mi { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); padding: 0 36px; }
+  .md { color: var(--pink); font-size: 1rem; vertical-align: middle; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ── SECTIONS ── */
+  section { padding: 100px 56px; }
+  .stag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+  .stag::before { content: ''; width: 24px; height: 2px; background: var(--cyan); display: block; }
+  h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: 0.95; letter-spacing: 0.03em; }
+  .cyan { color: var(--cyan); }
+  .cyan-bar { width: 48px; height: 3px; background: var(--cyan); margin: 24px 0; }
+
+  /* ── SERVICES ── */
+  #services { background: var(--dark); }
+  .services-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; gap: 40px; }
+  .services-top p { font-size: 0.92rem; line-height: 1.8; color: var(--grey); max-width: 380px; }
+  .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+  .scard { background: var(--dark2); padding: 40px 34px; position: relative; overflow: hidden; transition: background 0.3s, transform 0.3s; }
+  .scard::before { content: ''; position: absolute; top:0; left:0; width:3px; height:0; background: var(--gradient); transition: height 0.4s; }
+  .scard:hover { background: #1a1a1a; transform: translateY(-3px); }
+  .scard:hover::before { height: 100%; }
+  .snum { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; color: rgba(0,212,232,0.06); line-height: 1; position: absolute; top:12px; right:18px; }
+  .sicon { width:46px; height:46px; background: var(--cyan-pale); border: 1px solid rgba(0,212,232,0.25); display:flex; align-items:center; justify-content:center; margin-bottom:22px; font-size:1.2rem; clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%); }
+  .scard h3 { font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--white); margin-bottom:12px; }
+  .scard p { font-size:0.8rem; line-height:1.85; color:var(--grey); }
+  .stags { display:flex; flex-wrap:wrap; gap:6px; margin-top:20px; }
+  .tag { font-family:'Barlow Condensed',sans-serif; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--cyan); border:1px solid rgba(0,212,232,0.22); padding:3px 10px; }
+
+  /* Dimension badge */
+  .dim-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,212,232,0.08); border: 1px solid rgba(0,212,232,0.3);
+    color: var(--cyan); font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 5px 12px; margin-top: 14px; margin-bottom: 4px;
+  }
+  .dim-badge::before { content: '↕'; font-size: 0.8rem; }
+
+  /* ── SECTEURS ── */
+  .secteurs-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:52px; }
+  .secteurs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+  .secteur { height:380px; position:relative; overflow:hidden; }
+
+  /* Real background images for each sector */
+  .secteur .sbg {
+    position:absolute; inset:0;
+    transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    background-size: cover; background-position: center;
+  }
+  .secteur:hover .sbg { transform:scale(1.07); }
+
+  /* Dark overlay on top of the image */
+  .secteur .sbg::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(0,0,0,0.45);
+    transition: background 0.4s;
+  }
+  .secteur:hover .sbg::after { background: rgba(0,0,0,0.3); }
+
+  /* Sector-specific background images */
+  .sbg-bureaux { background-image: url('https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Bureaux.jpg?v=1777469085'); }
+  .sbg-hotel   { background-image: url('https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Hotel.jpg?v=1777469093'); }
+  .sbg-retail  { background-image: url('https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Retail.jpg?v=1777469108'); }
+  .sbg-resto   { background-image: url('https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Restaurant.jpg?v=1777469447'); }
+  .sbg-resi    { background-image: url('https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Residence.jpg?v=1777469140'); }
+  .sbg-luxe    { background-image: url('https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Luxe.jpg?v=1777469102'); }
+
+  .secteur::after { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:var(--gradient); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; z-index:2; }
+  .secteur:hover::after { transform:scaleX(1); }
+  .sovl { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.1) 55%); display:flex; flex-direction:column; justify-content:flex-end; padding:22px 18px; z-index:1; }
+  .sico { font-size:1.8rem; margin-bottom:8px; }
+  .sname { font-family:'Barlow Condensed',sans-serif; font-size:0.95rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; }
+  .ssub { font-size:0.65rem; color:var(--cyan); letter-spacing:0.1em; margin-top:3px; opacity:0; transform:translateY(6px); transition:all 0.3s; }
+  .secteur:hover .ssub { opacity:1; transform:translateY(0); }
+
+  /* ── PROCESSUS ── */
+  #processus { background: var(--dark); }
+  .pgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-top:56px; }
+  .pcard { background:var(--dark2); padding:38px 30px; position:relative; }
+  .pcard:first-child { border-top:3px solid var(--cyan); }
+  .pnum { font-family:'Bebas Neue',sans-serif; font-size:4.5rem; color:rgba(0,212,232,0.08); line-height:1; margin-bottom:16px; display:block; }
+  .pcard h3 { font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; }
+  .pcard p { font-size:0.8rem; line-height:1.85; color:var(--grey); }
+
+  /* ── ABOUT ── */
+  #about { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+  .aimg-wrap { position:relative; }
+  .aimg {
+    width:100%; aspect-ratio:4/5; background:var(--dark2);
+    position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .aimg video { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .aimg-wrap::before,.aimg-wrap::after { content:''; position:absolute; width:38px; height:38px; border-color:var(--cyan); border-style:solid; z-index:2; }
+  .aimg-wrap::before { top:-8px;left:-8px; border-width:2px 0 0 2px; }
+  .aimg-wrap::after { bottom:-8px;right:-8px; border-width:0 2px 2px 0; }
+  .abadge { position:absolute; bottom:-16px; right:-16px; width:100px; height:100px; background:var(--gradient); clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:3; }
+  .bnum { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; color:var(--black); line-height:1; }
+  .blbl { font-family:'Barlow Condensed',sans-serif; font-size:0.58rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--black); }
+
+  /* Video placeholder with instructions */
+  .video-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; background: linear-gradient(135deg,#0a1a1f,#0a0a0a); padding: 24px; text-align: center; }
+  .video-placeholder .vp-icon { font-size: 2rem; }
+  .video-placeholder .vp-title { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--cyan); letter-spacing:0.2em; }
+  .video-placeholder .vp-steps { font-size:0.62rem; color:rgba(136,136,136,0.7); line-height: 1.8; margin-top: 4px; }
+  .video-placeholder .vp-code { font-family: monospace; font-size: 0.58rem; color: rgba(0,212,232,0.5); background: rgba(0,212,232,0.05); padding: 8px 12px; border: 1px solid rgba(0,212,232,0.15); border-radius: 2px; margin-top: 8px; white-space: nowrap; }
+
+  .atext p { font-size:0.92rem; line-height:1.85; color:var(--grey); margin-top:22px; }
+  .alist { list-style:none; display:flex; flex-direction:column; gap:11px; margin-top:28px; }
+  .alist li { font-size:0.82rem; color:var(--light-grey); display:flex; align-items:center; gap:10px; }
+  .alist li::before { content:'▸'; color:var(--cyan); font-size:0.7rem; }
+
+  /* ── TESTIMONIALS ── */
+  #testi { background: var(--dark); }
+  .tgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:56px; }
+  .tcard { background:var(--dark2); padding:40px 34px; position:relative; }
+  .tcard:first-child::before,.tcard:hover::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:var(--gradient); }
+  .qmark { font-family:'Bebas Neue',sans-serif; font-size:5rem; line-height:0.7; margin-bottom:20px; display:block; }
+  .ttext { font-size:0.92rem; line-height:1.8; color:var(--light-grey); font-style:italic; margin-bottom:28px; }
+  .tauthor { display:flex; align-items:center; gap:12px; }
+  .tavatar { width:40px; height:40px; background:var(--gradient); clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%); display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--black); }
+  .tname { font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; }
+  .trole { font-size:0.7rem; color:var(--grey); margin-top:2px; }
+
+  /* ── GALERIE ── */
+  #galerie { background: var(--dark); }
+  .galerie-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; margin-top:56px; }
+  .galerie-item { aspect-ratio:4/3; overflow:hidden; position:relative; background:var(--dark2); }
+  .galerie-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s cubic-bezier(0.22,1,0.36,1); display:block; }
+  .galerie-item:hover img { transform:scale(1.06); }
+  .galerie-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; }
+  .galerie-placeholder span { font-family:'Bebas Neue',sans-serif; font-size:0.9rem; color:rgba(0,212,232,0.25); letter-spacing:0.15em; }
+
+  /* Galerie instructions box */
+  .galerie-instructions {
+    margin-top: 32px; padding: 24px 28px;
+    background: rgba(0,212,232,0.04); border: 1px solid rgba(0,212,232,0.15);
+    border-left: 3px solid var(--cyan);
+  }
+  .galerie-instructions h4 {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem;
+    letter-spacing: 0.25em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;
+  }
+  .galerie-instructions ol {
+    font-size: 0.78rem; color: var(--grey); line-height: 2; padding-left: 18px;
+  }
+  .galerie-instructions code {
+    font-family: monospace; font-size: 0.7rem; color: var(--cyan);
+    background: rgba(0,212,232,0.07); padding: 1px 6px;
+  }
+
+  /* ── CTA ── */
+  #cta { position:relative; overflow:hidden; text-align:center; padding:140px 56px; }
+  #cta::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:var(--gradient); }
+  #cta::after { content:''; position:absolute; bottom:0;left:0;right:0; height:3px; background:var(--cyan); }
+  .cta-glow { position:absolute; inset:0; background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(0,212,232,0.05) 0%,rgba(232,64,122,0.04) 60%,transparent 100%); }
+  #cta h2 { font-size:clamp(3rem,7vw,7rem); margin-bottom:20px; }
+  #cta p { font-size:0.95rem; color:var(--grey); max-width:480px; margin:0 auto 48px; line-height:1.8; }
+  .cta-btns { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; }
+
+  /* ── CONTACT ── */
+  #contact { display:grid; grid-template-columns:1fr 1.3fr; gap:80px; align-items:start; background:var(--dark); }
+  .cleft p { font-size:0.88rem; color:var(--grey); line-height:1.8; margin-bottom:40px; margin-top:18px; }
+  .citems { display:flex; flex-direction:column; gap:18px; }
+  .citem { display:flex; align-items:center; gap:14px; }
+  .cico { width:42px; height:42px; background:var(--cyan-pale); border:1px solid rgba(0,212,232,0.25); display:flex; align-items:center; justify-content:center; color:var(--cyan); font-size:0.95rem; clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%); flex-shrink:0; }
+  .clbl { font-family:'Barlow Condensed',sans-serif; font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--cyan); display:block; }
+  .cval { font-size:0.85rem; color:var(--light-grey); }
+  .fg { margin-bottom:18px; }
+  .fg label { font-family:'Barlow Condensed',sans-serif; font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--grey); display:block; margin-bottom:7px; }
+  .fg input,.fg select,.fg textarea { width:100%; background:var(--dark2); border:1px solid rgba(255,255,255,0.07); border-left:3px solid transparent; color:var(--white); padding:13px 16px; font-family:'Barlow',sans-serif; font-size:0.85rem; outline:none; transition:border-color 0.2s; -webkit-appearance:none; }
+  .fg input:focus,.fg select:focus,.fg textarea:focus { border-color:rgba(0,212,232,0.3); border-left-color:var(--cyan); }
+  .fg select option { background:#1a1a1a; }
+  .fg textarea { resize:vertical; min-height:110px; }
+  .frow { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+  /* ── FOOTER ── */
+  footer { background:#050505; border-top:1px solid rgba(255,255,255,0.06); padding:68px 56px 32px; }
+  .ftop { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:56px; padding-bottom:52px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .flogo { height:46px; width:auto; margin-bottom:18px; display:block; }
+  .fbrand p { font-size:0.8rem; line-height:1.85; color:var(--grey); max-width:250px; }
+  .fcol h4 { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--cyan); margin-bottom:18px; }
+  .fcol ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .fcol a { font-size:0.8rem; color:var(--grey); text-decoration:none; transition:color 0.2s; }
+  .fcol a:hover { color:var(--white); }
+  .fbot { display:flex; justify-content:space-between; align-items:center; padding-top:24px; }
+  .fbot p { font-size:0.7rem; color:rgba(136,136,136,0.45); letter-spacing:0.07em; }
+  .fbot span { color:var(--cyan); }
+
+  /* ── REVEAL ANIMATIONS ── */
+  .reveal { opacity:0; transform:translateY(26px); transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1),transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:1100px){
+    nav{padding:16px 28px;} section{padding:72px 28px;}
+    .services-grid{grid-template-columns:repeat(2,1fr);}
+    .secteurs-grid{grid-template-columns:repeat(3,1fr);}
+    #about,#contact{grid-template-columns:1fr; gap:52px;}
+    .pgrid{grid-template-columns:repeat(2,1fr);}
+    .ftop{grid-template-columns:1fr 1fr; gap:32px;}
+    .galerie-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(max-width:768px){
+    /* Show hamburger, hide desktop nav */
+    .hamburger { display: flex; }
+    .mobile-menu { display: flex; }
+    .nav-links, .nav-cta { display:none; }
+    nav { padding:14px 20px; justify-content: space-between; }
+    .logo-img { height: 70px; margin: 0 auto; }
+    section { padding:52px 20px; }
+    h1 { font-size:3.2rem; }
+    .services-grid,.pgrid,.tgrid { grid-template-columns:1fr; }
+    .secteurs-grid { grid-template-columns:repeat(2,1fr); }
+    .galerie-grid { grid-template-columns:1fr; }
+    .ftop { grid-template-columns:1fr; }
+    .secteurs-header,.services-top { flex-direction:column; align-items:flex-start; gap:18px; }
+    .hero-stats { flex-wrap:wrap; gap:22px; }
+    .frow { grid-template-columns:1fr; }
+    .scroll-hint { display:none; }
+    #hero { padding:100px 20px 60px; }
+  }
+</style>
+
+<!-- ═══════════════════════════════════════════════ NAV ═══ -->
+<nav id="nav">
+  <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Copie_de_Copie_de_Pink_Black_and_White_Grunge_Clothing_Logo_copie.png?v=1777071699" alt="WallXpert" class="logo-img" />
+  <ul class="nav-links">
+    <li><a href="#about">À Propos</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#secteurs">Secteurs</a></li>
+    <li><a href="#processus">Processus</a></li>
+    <li><a href="#galerie">Réalisations</a></li>
+    <li><a href="/pages/tarifs">Tarifs</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Devis Gratuit</a>
+
+  <!-- Hamburger (mobile only) -->
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile overlay menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about"     class="mob-link">À Propos</a>
+  <a href="#services"  class="mob-link">Services</a>
+  <a href="#secteurs"  class="mob-link">Secteurs</a>
+  <a href="#processus" class="mob-link">Processus</a>
+  <a href="#galerie"   class="mob-link">Réalisations</a>
+  <a href="/pages/tarifs" class="mob-link">Tarifs</a>
+  <a href="#contact"   class="mob-cta">Devis Gratuit</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════ HERO ═══ -->
+<section id="hero">
+  <div class="hero-blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+  <div class="hero-content">
+    <div class="eyebrow">Luxembourg · EST. 2026</div>
+    <h1>Vos Murs.<br><span class="grad">Votre Impact.</span><br><span class="outline">Sans Limite.</span></h1>
+    <p class="hero-sub">WallXpert révolutionne l'impression murale grand format au Luxembourg. Des espaces professionnels et résidentiels transformés en expériences visuelles inoubliables.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Demander un devis</a>
+      <a href="#services" class="btn-outline">Nos services</a>
+    </div>
+    <div class="hero-stats">
+      <!-- ✅ MODIFIÉ : 500+ → 100+ -->
+      <div><span class="hnum grad">100+</span><span class="hlabel">Projets réalisés</span></div>
+      <div><span class="hnum grad">6</span><span class="hlabel">Secteurs couverts</span></div>
+      <div><span class="hnum grad">24H</span><span class="hlabel">Délai de réponse</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="vline"></div><span>Scroll</span></div>
+</section>
+
+<!-- ═══════════════════════════════════════════ MARQUEE ═══ -->
+<div class="marquee-band">
+  <div class="marquee-inner">
+    <span class="mi">Impression Grand Format</span><span class="md">✦</span>
+    <span class="mi">Impression au Sol</span><span class="md">✦</span>
+    <span class="mi">Signalétique Murale</span><span class="md">✦</span>
+    <span class="mi">Fresque Artistique</span><span class="md">✦</span>
+    <span class="mi">Effets 3D sur Mur</span><span class="md">✦</span>
+    <span class="mi">Design & Conseil</span><span class="md">✦</span>
+    <span class="mi">Luxembourg & Grande Région</span><span class="md">✦</span>
+    <span class="mi">Impression Grand Format</span><span class="md">✦</span>
+    <span class="mi">Impression au Sol</span><span class="md">✦</span>
+    <span class="mi">Signalétique Murale</span><span class="md">✦</span>
+    <span class="mi">Fresque Artistique</span><span class="md">✦</span>
+    <span class="mi">Effets 3D sur Mur</span><span class="md">✦</span>
+    <span class="mi">Design & Conseil</span><span class="md">✦</span>
+    <span class="mi">Luxembourg & Grande Région</span><span class="md">✦</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SERVICES ═══ -->
+<section id="services">
+  <div class="services-top">
+    <div>
+      <div class="stag reveal">Ce que nous faisons</div>
+      <h2 class="reveal d1">NOS <span class="cyan">SERVICES</span><br>SUR-MESURE</h2>
+    </div>
+    <p class="reveal d2">De la conception à l'installation, nous prenons en charge chaque étape pour un résultat à la hauteur de vos ambitions.</p>
+  </div>
+  <div class="services-grid">
+
+    <!-- ✅ MODIFIÉ : ajout dimensions machine -->
+    <div class="scard reveal d1">
+      <span class="snum">01</span>
+      <div class="sicon">🖨</div>
+      <h3>Impression Directe UV</h3>
+      <p>Impression haute résolution directement sur vos murs et vos sols. Rendu précis, durable et sans joint — idéal pour les grandes surfaces murales comme pour les revêtements de sol impactants.</p>
+      <div class="dim-badge">Hauteur jusqu'à 3 m · Largeur illimitée</div>
+      <div class="stags"><span class="tag">Murs</span><span class="tag">Sol</span><span class="tag">UV</span><span class="tag">Grand Format</span></div>
+    </div>
+
+    <div class="scard reveal d2">
+      <span class="snum">02</span>
+      <div class="sicon">🏷</div>
+      <h3>Signalétique Murale</h3>
+      <p>Wayfinding, branding corporate, communication interne. Renforcez votre identité de marque dans chaque espace de votre entreprise.</p>
+      <div class="stags"><span class="tag">Branding</span><span class="tag">Wayfinding</span><span class="tag">Corporate</span></div>
+    </div>
+
+    <!-- ✅ MODIFIÉ : suppression mention sélection de modèles -->
+    <div class="scard reveal d3">
+      <span class="snum">03</span>
+      <div class="sicon">🎨</div>
+      <h3>Fresque Murale</h3>
+      <p>Donnez vie à vos espaces avec une fresque murale entièrement personnalisée selon votre univers et votre identité visuelle. Chaque création est unique et réalisée sur-mesure pour vous.</p>
+      <div class="stags"><span class="tag">Décoration</span><span class="tag">Sur-Mesure</span><span class="tag">Personnalisé</span></div>
+    </div>
+
+    <div class="scard reveal d1">
+      <span class="snum">04</span>
+      <div class="sicon">💡</div>
+      <h3>Effet 3D & Relief</h3>
+      <p>Transformez un mur ordinaire en une expérience visuelle saisissante. Nous créons des impressions en trompe-l'œil et effets 3D — idéal pour mettre en valeur un logo d'entreprise ou créer un mur signature.</p>
+      <div class="stags"><span class="tag">3D</span><span class="tag">Trompe-l'œil</span><span class="tag">Impact Visuel</span></div>
+    </div>
+
+    <div class="scard reveal d2">
+      <span class="snum">05</span>
+      <div class="sicon">📋</div>
+      <h3>Conseil & Simulation</h3>
+      <p>Nous réalisons une simulation visuelle de votre projet à partir d'une photo de la surface souhaitée. Vous visualisez le résultat final avant toute production — pour décider en toute confiance.</p>
+      <div class="stags"><span class="tag">Simulation</span><span class="tag">Conseil</span><span class="tag">Personnalisé</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ SECTEURS ═══ -->
+<section id="secteurs" style="padding-bottom:0">
+  <div class="secteurs-header">
+    <div>
+      <div class="stag reveal">Nos domaines</div>
+      <h2 class="reveal d1">TOUS LES <span class="grad">UNIVERS</span><br>NOUS INSPIRENT</h2>
+    </div>
+    <a href="#contact" class="btn-outline reveal d2">Votre projet →</a>
+  </div>
+  <!-- ✅ MODIFIÉ : chaque secteur a maintenant une vraie image de fond -->
+  <div class="secteurs-grid">
+    <div class="secteur reveal">
+      <div class="sbg sbg-bureaux"></div>
+      <div class="sovl"><div class="sico">🏢</div><div class="sname">Bureaux & Corporate</div><div class="ssub">Espaces de travail inspirants</div></div>
+    </div>
+    <div class="secteur reveal d1">
+      <div class="sbg sbg-hotel"></div>
+      <div class="sovl"><div class="sico">🏨</div><div class="sname">Hôtels & Hospitality</div><div class="ssub">Expérience client mémorable</div></div>
+    </div>
+    <div class="secteur reveal d2">
+      <div class="sbg sbg-retail"></div>
+      <div class="sovl"><div class="sico">🛍</div><div class="sname">Commerce & Retail</div><div class="ssub">Identité visuelle impactante</div></div>
+    </div>
+    <div class="secteur reveal d2">
+      <div class="sbg sbg-resto"></div>
+      <div class="sovl"><div class="sico">🍽</div><div class="sname">Restaurants & Bars</div><div class="ssub">Ambiance unique & sur-mesure</div></div>
+    </div>
+    <div class="secteur reveal d3">
+      <div class="sbg sbg-resi"></div>
+      <div class="sovl"><div class="sico">🏠</div><div class="sname">Résidences Haut Gamme</div><div class="ssub">Intérieurs d'exception</div></div>
+    </div>
+    <div class="secteur reveal d4">
+      <div class="sbg sbg-luxe"></div>
+      <div class="sovl"><div class="sico">✦</div><div class="sname">Espaces Luxe & Prestige</div><div class="ssub">L'excellence sans compromis</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ PROCESSUS ═══ -->
+<section id="processus">
+  <div class="stag reveal">Comment ça marche</div>
+  <h2 class="reveal d1">UN PROCESSUS <span class="cyan">SANS FRICTION</span></h2>
+  <div class="pgrid">
+    <div class="pcard reveal d1"><span class="pnum">01</span><h3>Consultation</h3><p>Nous analysons ensemble vos besoins, votre espace et votre identité visuelle lors d'un échange personnalisé — en présentiel à Luxembourg ou à distance.</p></div>
+    <div class="pcard reveal d2"><span class="pnum">02</span><h3>Simulation Visuelle</h3><p>À partir d'une photo de votre surface, nous réalisons une simulation professionnelle du rendu final. Vous validez le visuel avant toute mise en production.</p></div>
+    <div class="pcard reveal d3"><span class="pnum">03</span><h3>Production</h3><p>Impression grand format en haute résolution avec des matériaux premium, durables et adaptés à chaque type de surface — murs, sols et supports spéciaux.</p></div>
+    <div class="pcard reveal d4"><span class="pnum">04</span><h3>Installation</h3><p>Notre équipe technique prend en charge la pose sur site avec soin et précision. Chaque intervention se termine par une vérification complète du résultat final.</p></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ ABOUT + VIDÉO ═══ -->
+<section id="about">
+  <div class="aimg-wrap reveal">
+    <div class="aimg">
+      <!--
+        ════════════════════════════════════════════════════════
+        📹 COMMENT AJOUTER TA VIDÉO DE MACHINE — 3 ÉTAPES :
+        ════════════════════════════════════════════════════════
+        1. Va dans Shopify Admin → Settings → Files
+        2. Clique "Upload files" et sélectionne ta vidéo (.mp4 recommandé)
+        3. Une fois uploadée, clique dessus pour copier son URL (ex: https://cdn.shopify.com/...mp4)
+
+        Ensuite remplace TOUT le bloc ci-dessous (de <div class="video-placeholder"> jusqu'à </div>)
+        par ce code (colle l'URL de ta vidéo dans src="...") :
+
+        <video autoplay muted loop playsinline>
+          <source src="COLLE_URL_SHOPIFY_ICI.mp4" type="video/mp4">
+        </video>
+        ════════════════════════════════════════════════════════
+      -->
+      <video autoplay muted loop playsinline webkit-playsinline preload="auto" id="machineVideo" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+        <source src="https://cdn.shopify.com/videos/c/o/v/496437bc511540c88e3f47223f185a88.mp4" type="video/mp4">
+      </video>
+      <!-- Play button overlay for iPhone -->
+      <div id="videoPlayBtn" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;cursor:pointer;background:rgba(0,0,0,0.3);">
+        <div style="width:64px;height:64px;background:rgba(0,212,232,0.9);clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);display:flex;align-items:center;justify-content:center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#000"><polygon points="5,3 19,12 5,21"/></svg>
+        </div>
+        <div style="position:absolute;bottom:20px;font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Appuyez pour lancer</div>
+      </div>
+      <script>
+        (function(){
+          var v = document.getElementById("machineVideo");
+          var btn = document.getElementById("videoPlayBtn");
+          if(!v) return;
+          // Try autoplay first
+          var p = v.play();
+          if(p !== undefined){
+            p.then(function(){
+              if(btn) btn.style.display = "none";
+            }).catch(function(){
+              // Autoplay blocked — show play button
+              if(btn) btn.style.display = "flex";
+            });
+          }
+          // On tap — play and hide button
+          if(btn){
+            btn.addEventListener("click", function(){
+              v.play();
+              btn.style.display = "none";
+            });
+          }
+        })();
+      </script>
+    </div>
+    <div class="abadge"><span class="bnum">100%</span><span class="blbl">Satisfaction</span></div>
+  </div>
+  <div class="atext reveal d2">
+    <div class="stag">Notre Philosophie</div>
+    <h2>L'ART DE <span class="grad">SUBLIMER</span><br>CHAQUE ESPACE</h2>
+    <div class="cyan-bar"></div>
+    <p>Chez WallXpert, nous croyons que chaque surface est une opportunité de créer quelque chose d'extraordinaire. Notre savoir-faire en impression murale et au sol grand format allie technologie de pointe et sens esthétique affûté.</p>
+    <p>De la simulation visuelle à l'installation, nous accompagnons hôteliers, entrepreneurs, architectes d'intérieur et particuliers dans la transformation de leurs espaces en œuvres uniques — basés à Luxembourg, actifs dans toute la Grande Région.</p>
+    <ul class="alist">
+      <li>Impression UV grand format — murs et sols</li>
+      <li>Matériaux premium certifiés et durables</li>
+      <li>Simulation visuelle avant production</li>
+      <li>Accompagnement personnalisé de A à Z</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ TESTI ═══ -->
+<section id="testi">
+  <div class="stag reveal">Ils nous font confiance</div>
+  <h2 class="reveal d1">LA PAROLE À <span class="cyan">NOS CLIENTS</span></h2>
+  <div class="tgrid">
+    <div class="tcard reveal d1"><span class="qmark grad">"</span><p class="ttext">WallXpert a transformé le lobby de notre hôtel en une expérience sensorielle à part entière. Le résultat dépasse tout ce que nous avions imaginé.</p><div class="tauthor"><div class="tavatar">S</div><div><div class="tname">Sophie M.</div><div class="trole">Directrice · Hôtel Kirchberg, Luxembourg</div></div></div></div>
+    <div class="tcard reveal d2"><span class="qmark grad">"</span><p class="ttext">De la simulation à la pose, une équipe d'un rare professionnalisme. Nos bureaux reflètent désormais parfaitement notre identité de marque.</p><div class="tauthor"><div class="tavatar">T</div><div><div class="tname">Thomas D.</div><div class="trole">CEO · Fintech Luxembourg</div></div></div></div>
+    <div class="tcard reveal d3"><span class="qmark grad">"</span><p class="ttext">Notre restaurant a une identité visuelle unique grâce à WallXpert. Les clients nous complimentent chaque jour sur l'ambiance.</p><div class="tauthor"><div class="tavatar">M</div><div><div class="tname">Marc L.</div><div class="trole">Restaurateur · Ville de Luxembourg</div></div></div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ GALERIE ═══ -->
+<section id="galerie">
+  <div class="stag reveal">Nos travaux</div>
+  <h2 class="reveal d1">NOS <span class="cyan">RÉALISATIONS</span></h2>
+  <div class="galerie-grid">
+    <!--
+      ════════════════════════════════════════════════════════
+      📸 COMMENT AJOUTER TES 6 PHOTOS — 3 ÉTAPES :
+      ════════════════════════════════════════════════════════
+      1. Shopify Admin → Settings → Files → Upload files
+      2. Upload tes 6 photos (JPG/PNG)
+      3. Pour chaque photo, remplace le <div class="galerie-placeholder">...</div>
+         par : <img src="URL_SHOPIFY_DE_TA_PHOTO" alt="Réalisation WallXpert" />
+      ════════════════════════════════════════════════════════
+    -->
+
+    <!-- Photo 1 — remplace le contenu par : <img src="URL_PHOTO_1" alt="Réalisation 1" /> -->
+    <div class="galerie-item reveal d1">
+      <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/3.jpg?v=1776784441" alt="Réalisation WallXpert 1" />
+    </div>
+
+    <!-- Photo 2 -->
+    <div class="galerie-item reveal d2">
+      <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/2.jpg?v=1776784441" alt="Réalisation WallXpert 2" />
+    </div>
+
+    <!-- Photo 3 -->
+    <div class="galerie-item reveal d3">
+      <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/8.jpg?v=1776784440" alt="Réalisation WallXpert 3" />
+    </div>
+
+    <!-- Photo 4 -->
+    <div class="galerie-item reveal d1">
+      <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/6.jpg?v=1776784439" alt="Réalisation WallXpert 4" />
+    </div>
+
+    <!-- Photo 5 -->
+    <div class="galerie-item reveal d2">
+      <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/7.jpg?v=1776784440" alt="Réalisation WallXpert 5" />
+    </div>
+
+    <!-- Photo 6 -->
+    <div class="galerie-item reveal d3">
+      <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/5.jpg?v=1776784438" alt="Réalisation WallXpert 6" />
+    </div>
+  </div>
+
+
+</section>
+
+<!-- ═══════════════════════════════════════════════ CTA ═══ -->
+<section id="cta">
+  <div class="cta-glow"></div>
+  <div class="stag reveal" style="justify-content:center;margin-bottom:16px">Passez à l'action</div>
+  <h2 class="reveal d1">VOTRE <span class="grad">VISION</span>,<br>NOTRE EXPERTISE</h2>
+  <p class="reveal d2">Consultation gratuite et devis personnalisé sous 24h. Chaque projet mérite une approche unique.</p>
+  <div class="cta-btns reveal d3">
+    <a href="#contact" class="btn-primary">Demander un devis gratuit</a>
+    <a href="tel:+352691132192" class="btn-outline">Nous appeler</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ CONTACT ═══ -->
+<section id="contact">
+  <div class="cleft reveal">
+    <div class="stag">Contact</div>
+    <h2>PARLONS DE <span class="cyan">VOTRE</span><br>PROJET</h2>
+    <div class="cyan-bar"></div>
+    <p>Nous intervenons au Luxembourg et dans la Grande Région. Réponse garantie sous 24 heures ouvrables.</p>
+    <div class="citems">
+      <div class="citem"><div class="cico">✉</div><div><span class="clbl">Email</span><span class="cval">contact@wallxpert.lu</span></div></div>
+      <div class="citem"><div class="cico">✆</div><div><span class="clbl">Téléphone</span><span class="cval">+352 691 132 192</span></div></div>
+      <div class="citem"><div class="cico">◈</div><div><span class="clbl">Zone</span><span class="cval">Luxembourg & Grande Région</span></div></div>
+    </div>
+  </div>
+  <div class="contact-form reveal d2">
+    {% form 'contact' %}
+      <div class="frow">
+        <div class="fg"><label>Prénom</label><input type="text" name="contact[Prénom]" placeholder="Jean" /></div>
+        <div class="fg"><label>Nom</label><input type="text" name="contact[Nom]" placeholder="Dupont" /></div>
+      </div>
+      <div class="fg"><label>Email</label><input type="email" name="contact[email]" placeholder="jean.dupont@entreprise.lu" required /></div>
+      <div class="fg"><label>Téléphone</label><input type="text" name="contact[Téléphone]" placeholder="+352 XX XX XX" /></div>
+      <div class="fg">
+        <label>Secteur</label>
+        <select name="contact[Secteur]">
+          <option value="">Votre secteur d'activité</option>
+          <option>Bureau & Corporate</option>
+          <option>Hôtel & Hospitality</option>
+          <option>Commerce & Retail</option>
+          <option>Restaurant & Bar</option>
+          <option>Résidence Haut de Gamme</option>
+          <option>Particulier</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="fg"><label>Votre projet</label><textarea name="contact[body]" placeholder="Surface approximative, type d'impression souhaité, délai..."></textarea></div>
+      {% if form.posted_successfully? %}
+        <p style="color:var(--cyan);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.1em;margin-bottom:16px;">✓ Message envoyé — nous vous répondons sous 24h !</p>
+      {% endif %}
+      <button type="submit" class="btn-primary" style="border:none;cursor:pointer;">Envoyer ma demande →</button>
+    {% endform %}
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ FOOTER ═══ -->
+<footer>
+  <div class="ftop">
+    <div class="fbrand">
+      <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Copie_de_Copie_de_Pink_Black_and_White_Grunge_Clothing_Logo_copie.png?v=1777071699" alt="WallXpert" class="flogo" />
+      <p>L'impression murale et au sol haut de gamme au Luxembourg. Transformons vos espaces en œuvres d'exception — depuis 2026.</p>
+    </div>
+    <div class="fcol"><h4>Services</h4><ul><li><a href="#services">Impression Directe UV</a></li><li><a href="#services">Signalétique Murale</a></li><li><a href="#services">Fresque Murale</a></li><li><a href="#services">Effet 3D & Relief</a></li><li><a href="#services">Conseil & Simulation</a></li></ul></div>
+    <div class="fcol"><h4>Secteurs</h4><ul><li><a href="#secteurs">Bureaux</a></li><li><a href="#secteurs">Hôtels</a></li><li><a href="#secteurs">Commerce</a></li><li><a href="#secteurs">Restaurants</a></li><li><a href="#secteurs">Résidences</a></li></ul></div>
+    <div class="fcol"><h4>Entreprise</h4><ul><li><a href="#about">À Propos</a></li><li><a href="#galerie">Réalisations</a></li><li><a href="/pages/tarifs">Tarifs</a></li><li><a href="#contact">Contact</a></li><li><a href="/pages/mentions-legales">Mentions Légales</a></li><li><a href="/pages/politique-de-confidentialite">Confidentialité</a></li></ul></div>
+  </div>
+  <div class="fbot">
+    <p>© 2026 <span>WallXpert</span> Luxembourg — Tous droits réservés.</p>
+    <p>Made with <span>✦</span> in Luxembourg</p>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll effect
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50));
+
+  // Reveal on scroll
+  const obs = new IntersectionObserver(e => e.forEach(x => {
+    if(x.isIntersecting){ x.target.classList.add('visible'); obs.unobserve(x.target); }
+  }), {threshold:0.1, rootMargin:'0px 0px -50px 0px'});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); }
+  }));
+
+  // ── HAMBURGER MOBILE MENU ──
+  const hamburger   = document.getElementById('hamburger');
+  const mobileMenu  = document.getElementById('mobileMenu');
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  // Close menu when a link is clicked
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "WallXpert",
+  "settings": []
+}
+{% endschema %}
