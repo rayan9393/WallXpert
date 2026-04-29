@@ -1,0 +1,888 @@
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --black: #000000; --dark: #0a0a0a; --dark2: #111111;
+    --cyan: #00d4e8; --cyan-dark: #00aabf; --cyan-pale: rgba(0,212,232,0.1);
+    --pink: #e8407a; --orange: #f5a623;
+    --gradient: linear-gradient(135deg, #e8407a 0%, #f5a623 100%);
+    --white: #ffffff; --grey: #888888; --light-grey: #cccccc;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 18px 56px; background: rgba(0,0,0,0.88); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(0,212,232,0.12); }
+  .logo-img { height: 80px; width: auto; display: block; }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--light-grey); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-cta { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--black); background: var(--cyan); padding: 10px 28px; text-decoration: none; clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); }
+  .hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 4px; }
+  .hamburger span { display: block; width: 100%; height: 2px; background: var(--cyan); transition: transform 0.3s, opacity 0.3s; }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mobile-menu { display: none; position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.97); backdrop-filter: blur(20px); flex-direction: column; align-items: center; justify-content: center; gap: 32px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .mobile-menu.open { opacity: 1; pointer-events: all; }
+  .mobile-menu a { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.1em; color: var(--white); text-decoration: none; }
+  .mobile-menu .mob-cta { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); background: var(--cyan); padding: 14px 36px; clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); }
+
+  .tarifs-hero { padding: 160px 56px 80px; position: relative; overflow: hidden; border-bottom: 1px solid rgba(0,212,232,0.1); }
+  .hero-blobs { position: absolute; inset: 0; pointer-events: none; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(90px); }
+  .b1 { width: 600px; height: 600px; background: var(--cyan); opacity: 0.08; top: -150px; right: -100px; }
+  .b2 { width: 400px; height: 400px; background: var(--pink); opacity: 0.06; bottom: -80px; left: 20%; }
+  .eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cyan); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+  .eyebrow::before { content: ''; width: 32px; height: 2px; background: var(--cyan); display: block; }
+  .tarifs-hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem, 8vw, 8rem); line-height: 0.92; margin-bottom: 20px; }
+  .grad { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .tarifs-hero p { font-size: 0.95rem; color: var(--grey); max-width: 560px; line-height: 1.85; }
+
+  .section { padding: 80px 56px; }
+  .section-dark { background: var(--dark); }
+  .stag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+  .stag::before { content: ''; width: 24px; height: 2px; background: var(--cyan); display: block; }
+  h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 4vw, 4rem); line-height: 0.95; letter-spacing: 0.03em; margin-bottom: 48px; }
+  .cyan { color: var(--cyan); }
+
+  /* ── SERVICE TABS ── */
+  .service-tabs { display: flex; gap: 3px; margin-bottom: 36px; flex-wrap: wrap; }
+  .stab { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 11px 20px; background: var(--dark2); color: var(--grey); border: none; cursor: pointer; clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%); transition: all 0.2s; white-space: nowrap; }
+  .stab:hover { color: var(--cyan); }
+  .stab.active { background: var(--cyan); color: var(--black); }
+  .stab.premium-tab.active { background: var(--gradient); color: var(--black); }
+  .stab.ultra-tab.active { background: linear-gradient(135deg, #9b40e8 0%, #e8407a 100%); color: var(--white); }
+  .premium-badge-tab { font-size: 0.52rem; background: rgba(232,64,122,0.3); color: var(--pink); padding: 2px 5px; margin-left: 5px; vertical-align: middle; border: 1px solid rgba(232,64,122,0.3); }
+  .ultra-badge-tab { font-size: 0.52rem; background: rgba(155,64,232,0.3); color: #c084fc; padding: 2px 5px; margin-left: 5px; vertical-align: middle; border: 1px solid rgba(155,64,232,0.3); }
+
+  /* ── PALIERS ── */
+  .paliers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: 28px; }
+  .palier { background: var(--dark2); padding: 36px 28px; position: relative; overflow: hidden; transition: background 0.3s, transform 0.3s; }
+  .palier:hover { background: #1a1a1a; transform: translateY(-3px); }
+  .palier::before { content: ''; position: absolute; top:0; left:0; right:0; height:3px; background: var(--gradient); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+  .palier:hover::before { transform: scaleX(1); }
+  .palier.featured { background: rgba(0,212,232,0.05); border: 1px solid rgba(0,212,232,0.2); }
+  .palier.featured::before { transform: scaleX(1); background: var(--cyan); }
+  .palier.premium { background: rgba(232,64,122,0.05); border: 1px solid rgba(232,64,122,0.2); }
+  .palier.premium::before { transform: scaleX(1); }
+  .palier.ultra { background: rgba(155,64,232,0.05); border: 1px solid rgba(155,64,232,0.2); }
+  .palier.ultra::before { transform: scaleX(1); background: linear-gradient(90deg,#9b40e8,#e8407a); }
+  .palier-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--grey); margin-bottom: 12px; display: block; }
+  .palier-range { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--white); letter-spacing: 0.05em; margin-bottom: 16px; display: block; }
+  .palier-price { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1; color: var(--cyan); display: block; }
+  .palier-price span { font-size: 0.9rem; color: var(--grey); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.1em; }
+  .palier-price.grad-price { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .palier-price.grad-price span { -webkit-text-fill-color: var(--grey); }
+  .palier-price.ultra-price { background: linear-gradient(135deg,#9b40e8,#e8407a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .palier-price.ultra-price span { -webkit-text-fill-color: var(--grey); }
+  .palier-desc { font-size: 0.75rem; color: var(--grey); line-height: 1.7; margin-top: 14px; }
+  .palier-badge { display: inline-block; font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--gradient); color: var(--black); padding: 3px 10px; margin-bottom: 12px; }
+  .palier-badge.ultra-badge { background: linear-gradient(135deg,#9b40e8,#e8407a); color: var(--white); }
+
+  .note-box { background: rgba(0,212,232,0.04); border: 1px solid rgba(0,212,232,0.15); border-left: 3px solid var(--cyan); padding: 18px 24px; font-size: 0.8rem; color: var(--grey); line-height: 1.8; }
+  .note-box strong { color: var(--light-grey); }
+  .note-box.premium-note { background: rgba(232,64,122,0.04); border-color: rgba(232,64,122,0.2); border-left-color: var(--pink); }
+  .note-box.ultra-note { background: rgba(155,64,232,0.04); border-color: rgba(155,64,232,0.2); border-left-color: #9b40e8; }
+
+  /* ── CALCULATEUR ── */
+  .calc-wrap { background: var(--dark2); padding: 56px; position: relative; overflow: hidden; }
+  .calc-wrap::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); }
+  .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+  .calc-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--grey); display: block; margin-bottom: 10px; }
+  .surface-display { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; color: var(--white); margin-bottom: 4px; }
+  .surface-display span { font-size: 2rem; color: var(--cyan); }
+  .surface-unit { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--grey); margin-bottom: 28px; display: block; }
+  input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: rgba(255,255,255,0.08); outline: none; border-radius: 0; margin-bottom: 8px; cursor: pointer; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--gradient); border-radius: 0; clip-path: polygon(3px 0%,100% 0%,calc(100% - 3px) 100%,0% 100%); cursor: pointer; transition: transform 0.2s; }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .slider-bounds { display: flex; justify-content: space-between; font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(136,136,136,0.5); margin-bottom: 28px; }
+  .services-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .pill { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 14px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); color: var(--grey); background: none; transition: all 0.2s; clip-path: polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%); }
+  .pill:hover { border-color: var(--cyan); color: var(--cyan); }
+  .pill.active { background: var(--cyan); color: var(--black); border-color: var(--cyan); }
+  .pill.pill-premium.active { background: var(--gradient); border-color: var(--pink); color: var(--black); }
+  .pill.pill-ultra.active { background: linear-gradient(135deg,#9b40e8,#e8407a); border-color: #9b40e8; color: var(--white); }
+
+  .deplacement-select { width: 100%; background: #0d0d0d; border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid var(--cyan); color: var(--white); padding: 13px 16px; font-family: 'Barlow', sans-serif; font-size: 0.82rem; outline: none; -webkit-appearance: none; appearance: none; cursor: pointer; }
+  .deplacement-select option, .deplacement-select optgroup { background: #1a1a1a; }
+  .deplacement-result { margin-top: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; min-height: 20px; }
+  .dep-offert { color: #00e87a; }
+  .dep-payant { color: var(--orange); }
+
+  .result-card { background: var(--dark); padding: 40px 36px; position: relative; border: 1px solid rgba(0,212,232,0.1); }
+  .result-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--cyan); }
+  .result-service { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--cyan); margin-bottom: 24px; display: block; }
+  .decomp { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .decomp-line { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(255,255,255,0.03); transition: all 0.3s; }
+  .decomp-line.active-line { background: rgba(0,212,232,0.06); border-left: 2px solid var(--cyan); }
+  .decomp-line.inactive { opacity: 0.3; }
+  .decomp-line.dep-line { background: rgba(245,166,35,0.06); border-left: 2px solid var(--orange); }
+  .decomp-line.dep-offert-line { background: rgba(0,232,122,0.06); border-left: 2px solid #00e87a; }
+  .dl-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); }
+  .dl-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--white); }
+  .dl-val.cyan { color: var(--cyan); }
+  .dl-val.green { color: #00e87a; }
+  .dl-val.orange { color: var(--orange); }
+  .total-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 20px 0; }
+  .total-row { display: flex; justify-content: space-between; align-items: flex-end; }
+  .total-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey); }
+  .total-price { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; line-height: 1; }
+  .total-price .euro { font-size: 2rem; color: var(--grey); vertical-align: top; margin-top: 6px; display: inline-block; }
+  .total-note { font-size: 0.68rem; color: var(--grey); margin-top: 12px; font-style: italic; }
+  .cta-calc { margin-top: 28px; }
+
+  .btn-primary { font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); background: var(--gradient); padding: 16px 44px; text-decoration: none; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); transition: opacity 0.2s; display: inline-block; border: none; cursor: pointer; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-outline { font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--cyan); border: 2px solid var(--cyan); padding: 14px 36px; text-decoration: none; clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); transition: all 0.2s; display: inline-block; }
+  .btn-outline:hover { background: var(--cyan); color: var(--black); }
+
+  /* ── DÉPLACEMENT TABLE ── */
+  .dep-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .dep-zone { background: var(--dark2); padding: 24px 22px; position: relative; }
+  .dep-zone::before { content: ''; position: absolute; top:0; left:0; bottom:0; width:3px; }
+  .dep-zone.z0::before { background: #00e87a; }
+  .dep-zone.z1::before { background: #52c4d0; }
+  .dep-zone.z2::before { background: var(--cyan); }
+  .dep-zone.z3::before { background: #a8c8d8; }
+  .dep-zone.z4::before { background: var(--orange); }
+  .dep-zone.z5::before { background: #f5832a; }
+  .dep-zone.z6::before { background: var(--pink); }
+  .dep-zone.z7::before { background: #c0384a; }
+  .dep-zone.z8::before { background: var(--grey); }
+  .dep-zone-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px; }
+  .dep-zone-dist { font-family: 'Barlow Condensed', sans-serif; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey); }
+  .dep-zone-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+  .dep-zone-price.green { color: #00e87a; }
+  .dep-zone-price.orange { color: var(--orange); }
+  .dep-zone-price.pink { color: var(--pink); }
+  .dep-zone-towns { font-size: 0.7rem; color: var(--grey); line-height: 1.8; }
+
+  /* ── MESURER ── */
+  .mesure-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+  .mesure-text p { font-size: 0.88rem; color: var(--grey); line-height: 1.85; margin-bottom: 16px; }
+  .mesure-text ul { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .mesure-text li { font-size: 0.82rem; color: var(--light-grey); display: flex; align-items: flex-start; gap: 10px; line-height: 1.65; }
+  .mesure-text li::before { content: '▸'; color: var(--cyan); font-size: 0.7rem; flex-shrink: 0; margin-top: 3px; }
+  .min-price-box { background: rgba(0,212,232,0.05); border: 1px solid rgba(0,212,232,0.2); border-left: 3px solid var(--cyan); padding: 16px 20px; margin-top: 20px; font-size: 0.8rem; color: var(--grey); line-height: 1.7; }
+  .min-price-box strong { color: var(--cyan); font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; letter-spacing: 0.05em; }
+  .mesure-diagram { background: var(--dark2); padding: 28px; display: flex; align-items: center; justify-content: center; }
+
+  /* ── FAQ ── */
+  .faq-grid { display: flex; flex-direction: column; gap: 2px; margin-top: 48px; }
+  .faq-item { background: var(--dark2); }
+  .faq-q { padding: 22px 28px; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s; }
+  .faq-q:hover { color: var(--cyan); }
+  .faq-q .faq-icon { font-size: 1.2rem; color: var(--cyan); transition: transform 0.3s; flex-shrink: 0; }
+  .faq-q.open .faq-icon { transform: rotate(45deg); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .faq-a.open { max-height: 400px; }
+  .faq-a p { padding: 0 28px 22px; font-size: 0.85rem; color: var(--grey); line-height: 1.85; }
+
+  /* ── CTA ── */
+  .cta-bottom { text-align: center; padding: 100px 56px; position: relative; overflow: hidden; background: var(--dark); }
+  .cta-bottom::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:var(--gradient); }
+  .cta-glow { position:absolute; inset:0; background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(0,212,232,0.05) 0%,rgba(232,64,122,0.04) 60%,transparent 100%); pointer-events:none; }
+  .cta-bottom h2 { font-size: clamp(2.5rem, 6vw, 6rem); margin-bottom: 16px; }
+  .cta-bottom p { font-size: 0.92rem; color: var(--grey); max-width: 440px; margin: 0 auto 40px; line-height: 1.8; }
+  .cta-btns { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+  /* ── FOOTER ── */
+  footer { background:#050505; border-top:1px solid rgba(255,255,255,0.06); padding:52px 56px 28px; }
+  .ftop { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:56px; padding-bottom:40px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .flogo { height:60px; width:auto; margin-bottom:14px; display:block; }
+  .fbrand p { font-size:0.78rem; line-height:1.85; color:var(--grey); max-width:240px; }
+  .fcol h4 { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--cyan); margin-bottom:16px; }
+  .fcol ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .fcol a { font-size:0.78rem; color:var(--grey); text-decoration:none; transition:color 0.2s; }
+  .fcol a:hover { color:var(--white); }
+  .fbot { display:flex; justify-content:space-between; align-items:center; padding-top:20px; }
+  .fbot p { font-size:0.68rem; color:rgba(136,136,136,0.4); letter-spacing:0.07em; }
+  .fbot span { color:var(--cyan); }
+
+  .reveal { opacity:0; transform:translateY(26px); transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1),transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
+
+  @media(max-width:1100px){
+    nav{padding:16px 28px;} .section{padding:60px 28px;} .tarifs-hero{padding:130px 28px 60px;}
+    .paliers-grid{grid-template-columns:repeat(2,1fr);} .calc-grid{grid-template-columns:1fr;gap:40px;}
+    .calc-wrap{padding:36px 28px;} .ftop{grid-template-columns:1fr 1fr;gap:32px;}
+    .dep-grid{grid-template-columns:repeat(2,1fr);} .mesure-wrap{grid-template-columns:1fr;gap:36px;}
+  }
+  @media(max-width:768px){
+    .hamburger{display:flex;} .mobile-menu{display:flex;} .nav-links,.nav-cta{display:none;}
+    nav{padding:14px 20px;} .logo-img{height:70px;margin:0 auto;}
+    .tarifs-hero{padding:110px 20px 52px;} .section{padding:52px 20px;}
+    .paliers-grid,.dep-grid{grid-template-columns:1fr;} .calc-wrap{padding:28px 20px;}
+    .ftop{grid-template-columns:1fr;} .cta-bottom{padding:72px 20px;} .total-price{font-size:3rem;}
+    .service-tabs{flex-direction:column;gap:2px;}
+  }
+</style>
+
+<!-- NAV -->
+<nav id="nav">
+  <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Copie_de_Copie_de_Pink_Black_and_White_Grunge_Clothing_Logo_copie.png?v=1777071699" alt="WallXpert" class="logo-img" />
+  <ul class="nav-links">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/#services">Services</a></li>
+    <li><a href="/#secteurs">Secteurs</a></li>
+    <li><a href="/#galerie">Réalisations</a></li>
+    <li><a href="/pages/tarifs" style="color:var(--cyan);">Tarifs</a></li>
+  </ul>
+  <a href="/#contact" class="nav-cta">Devis Gratuit</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/">Accueil</a>
+  <a href="/#services">Services</a>
+  <a href="/#secteurs">Secteurs</a>
+  <a href="/#galerie">Réalisations</a>
+  <a href="/pages/tarifs">Tarifs</a>
+  <a href="/#contact" class="mob-cta">Devis Gratuit</a>
+</div>
+
+<!-- HERO -->
+<div class="tarifs-hero">
+  <div class="hero-blobs"><div class="blob b1"></div><div class="blob b2"></div></div>
+  <div style="position:relative;z-index:2;">
+    <div class="eyebrow">Tarification transparente</div>
+    <h1>NOS <span class="grad">TARIFS</span><br>AU M²</h1>
+    <p>Une grille tarifaire claire et dégressive. Plus votre surface est grande, plus le coût au m² diminue. Utilisez notre calculateur pour estimer votre projet en quelques secondes — déplacement inclus selon votre commune.</p>
+  </div>
+</div>
+
+<!-- GRILLE TARIFAIRE -->
+<div class="section section-dark">
+  <div class="stag reveal">Grille tarifaire</div>
+  <h2 class="reveal d1">TARIFS <span class="cyan">DÉGRESSIFS</span></h2>
+
+  <div class="service-tabs reveal d2">
+    <button class="stab active" data-tab="standard">🖨 Impression UV · 🎨 Fresque · 🏷 Signalétique</button>
+    <button class="stab" data-tab="3d-visuel">✨ Effet 3D Visuel <span class="premium-badge-tab">LISSE AU TOUCHER</span></button>
+    <button class="stab premium-tab" data-tab="3d-relief">💡 Effet 3D Relief <span class="ultra-badge-tab">RELIEF AU TOUCHER · LUXE</span></button>
+  </div>
+
+  <!-- STANDARD -->
+  <div id="tab-standard">
+    <div class="paliers-grid">
+      <div class="palier reveal d1">
+        <span class="palier-label">Premier mètre carré</span>
+        <span class="palier-range">1 m²</span>
+        <span class="palier-price">250 <span>€ / m²</span></span>
+        <p class="palier-desc">Tarif de base incluant la préparation du fichier et la mise en œuvre sur site.</p>
+      </div>
+      <div class="palier featured reveal d2">
+        <span class="palier-badge">Le plus populaire</span>
+        <span class="palier-label">Surface complémentaire</span>
+        <span class="palier-range">De 1 à 3 m²</span>
+        <span class="palier-price">150 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Chaque mètre carré additionnel jusqu'à 3 m² au total.</p>
+      </div>
+      <div class="palier reveal d3">
+        <span class="palier-label">Grande surface</span>
+        <span class="palier-range">De 3 à 10 m²</span>
+        <span class="palier-price">125 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Au-delà de 3 m², chaque mètre carré bénéficie d'un tarif encore plus avantageux.</p>
+      </div>
+      <div class="palier reveal d4">
+        <span class="palier-label">Très grande surface</span>
+        <span class="palier-range">+ de 10 m²</span>
+        <span class="palier-price">100 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Pour les projets ambitieux, le meilleur tarif au m² sur toute la surface au-delà de 10 m².</p>
+      </div>
+    </div>
+    <div class="note-box reveal">
+      <strong>Services inclus :</strong> Impression Directe UV, Fresque Murale personnalisée, Signalétique murale.
+    </div>
+  </div>
+
+  <!-- EFFET 3D VISUEL (lisse) -->
+  <div id="tab-3d-visuel" style="display:none;">
+    <div class="paliers-grid">
+      <div class="palier reveal d1">
+        <span class="palier-label">Premier mètre carré</span>
+        <span class="palier-range">1 m²</span>
+        <span class="palier-price grad-price">275 <span>€ / m²</span></span>
+        <p class="palier-desc">Effet trompe-l'œil saisissant — impression haute résolution, surface lisse au toucher.</p>
+      </div>
+      <div class="palier featured reveal d2">
+        <span class="palier-badge">Le plus populaire</span>
+        <span class="palier-label">Surface complémentaire</span>
+        <span class="palier-range">De 1 à 3 m²</span>
+        <span class="palier-price grad-price">165 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Chaque mètre carré additionnel jusqu'à 3 m² au total.</p>
+      </div>
+      <div class="palier reveal d3">
+        <span class="palier-label">Grande surface</span>
+        <span class="palier-range">De 3 à 10 m²</span>
+        <span class="palier-price grad-price">140 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Au-delà de 3 m², tarif préférentiel sur chaque mètre carré supplémentaire.</p>
+      </div>
+      <div class="palier reveal d4">
+        <span class="palier-label">Très grande surface</span>
+        <span class="palier-range">+ de 10 m²</span>
+        <span class="palier-price grad-price">110 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Meilleur tarif au m² pour les grands projets visuels.</p>
+      </div>
+    </div>
+    <div class="note-box premium-note reveal">
+      <strong>Effet 3D Visuel :</strong> rendu trompe-l'œil bluffant — illusion de profondeur, de relief ou de perspective. La surface reste parfaitement lisse au toucher. Idéal pour les logos en 3D, les murales immersives ou les motifs architecturaux.
+    </div>
+  </div>
+
+  <!-- EFFET 3D RELIEF (au toucher) -->
+  <div id="tab-3d-relief" style="display:none;">
+    <div class="paliers-grid">
+      <div class="palier ultra reveal d1">
+        <span class="palier-label">Premier mètre carré</span>
+        <span class="palier-range">1 m²</span>
+        <span class="palier-price ultra-price">315 <span>€ / m²</span></span>
+        <p class="palier-desc">Plusieurs couches d'encre superposées créent un relief physique perceptible au toucher.</p>
+      </div>
+      <div class="palier ultra reveal d2">
+        <span class="palier-badge ultra-badge">Luxe & Premium</span>
+        <span class="palier-label">Surface complémentaire</span>
+        <span class="palier-range">De 1 à 3 m²</span>
+        <span class="palier-price ultra-price">190 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Chaque mètre carré additionnel jusqu'à 3 m² au total.</p>
+      </div>
+      <div class="palier ultra reveal d3">
+        <span class="palier-label">Grande surface</span>
+        <span class="palier-range">De 3 à 10 m²</span>
+        <span class="palier-price ultra-price">160 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Au-delà de 3 m², tarif préférentiel sur chaque mètre carré supplémentaire.</p>
+      </div>
+      <div class="palier ultra reveal d4">
+        <span class="palier-label">Très grande surface</span>
+        <span class="palier-range">+ de 10 m²</span>
+        <span class="palier-price ultra-price">125 <span>€ / m² supp.</span></span>
+        <p class="palier-desc">Meilleur tarif au m² pour les grands projets en relief.</p>
+      </div>
+    </div>
+    <div class="note-box ultra-note reveal">
+      <strong>Pourquoi un tarif premium ?</strong> L'Effet 3D Relief nécessite plusieurs passages de la tête d'impression pour superposer les couches d'encre et créer un relief physique. Ce procédé consomme significativement plus d'encre et requiert des fichiers très spécifiques. Nous proposons un <strong>catalogue dédié</strong> d'images compatibles avec ce service — contactez-nous pour le découvrir.
+    </div>
+  </div>
+</div>
+
+<!-- CALCULATEUR -->
+<div class="section">
+  <div class="stag reveal">Estimez votre projet</div>
+  <h2 class="reveal d1">CALCULATEUR <span class="cyan">INTERACTIF</span></h2>
+  <div class="calc-wrap reveal d2">
+    <div class="calc-grid">
+      <div>
+        <label class="calc-label">Surface à imprimer</label>
+        <div class="surface-display" id="surfaceDisplay">1 <span>m²</span></div>
+        <span class="surface-unit">mètres carrés</span>
+        <input type="range" id="surfaceSlider" min="1" max="50" value="1" step="0.5" />
+        <div class="slider-bounds"><span>1 m²</span><span>50 m²</span></div>
+
+        <label class="calc-label">Type de service</label>
+        <div class="services-pills">
+          <button class="pill active" data-service="Impression UV" data-type="standard">🖨 Impression UV</button>
+          <button class="pill" data-service="Fresque Murale" data-type="standard">🎨 Fresque</button>
+          <button class="pill" data-service="Signalétique" data-type="standard">🏷 Signalétique</button>
+          <button class="pill pill-premium" data-service="Effet 3D Visuel" data-type="3d-visuel">✨ 3D Visuel</button>
+          <button class="pill pill-ultra" data-service="Effet 3D Relief" data-type="3d-relief">💡 3D Relief</button>
+        </div>
+
+        <label class="calc-label">Votre commune</label>
+        <select class="deplacement-select" id="communeSelect">
+          <option value="none">Sélectionnez votre commune...</option>
+          <optgroup label="✅ Déplacement offert (≤ 30 km)">
+            <option value="0">Bertrange</option>
+            <option value="0">Bettembourg</option>
+            <option value="0">Bous-Waldbredimus</option>
+            <option value="0">Contern</option>
+            <option value="0">Dalheim</option>
+            <option value="0">Differdange</option>
+            <option value="0">Dippach</option>
+            <option value="0">Dudelange</option>
+            <option value="0">Esch-sur-Alzette</option>
+            <option value="0">Frisange</option>
+            <option value="0">Garnich</option>
+            <option value="0">Hesperange</option>
+            <option value="0">Junglinster</option>
+            <option value="0">Käerjeng</option>
+            <option value="0">Kayl</option>
+            <option value="0">Kehlen</option>
+            <option value="0">Koerich</option>
+            <option value="0">Kopstal</option>
+            <option value="0">Lenningen</option>
+            <option value="0">Leudelange</option>
+            <option value="0">Lintgen</option>
+            <option value="0">Lorentzweiler</option>
+            <option value="0">Luxembourg-Ville</option>
+            <option value="0">Mamer</option>
+            <option value="0">Mondercange</option>
+            <option value="0">Mondorf-les-Bains</option>
+            <option value="0">Niederanven</option>
+            <option value="0">Pétange</option>
+            <option value="0">Reckange-sur-Mess</option>
+            <option value="0">Remich</option>
+            <option value="0">Roeser</option>
+            <option value="0">Rumelange</option>
+            <option value="0">Sandweiler</option>
+            <option value="0">Sanem</option>
+            <option value="0">Schengen</option>
+            <option value="0">Schifflange</option>
+            <option value="0">Schuttrange</option>
+            <option value="0">Stadtbredimus</option>
+            <option value="0">Steinfort</option>
+            <option value="0">Steinsel</option>
+            <option value="0">Strassen</option>
+            <option value="0">Walferdange</option>
+            <option value="0">Weiler-la-Tour</option>
+          </optgroup>
+          <optgroup label="🚗 +35 € de déplacement (> 30 km)">
+            <option value="35">Bech</option>
+            <option value="35">Betzdorf</option>
+            <option value="35">Bissen</option>
+            <option value="35">Biwer</option>
+            <option value="35">Consdorf</option>
+            <option value="35">Fischbach</option>
+            <option value="35">Flaxweiler</option>
+            <option value="35">Grevenmacher</option>
+            <option value="35">Habscht</option>
+            <option value="35">Heffingen</option>
+            <option value="35">Helperknapp</option>
+            <option value="35">Larochette</option>
+            <option value="35">Mersch</option>
+            <option value="35">Saeul</option>
+            <option value="35">Wormeldange</option>
+          </optgroup>
+          <optgroup label="🚗 +55 € de déplacement (> 40 km)">
+            <option value="55">Beaufort</option>
+            <option value="55">Beckerich</option>
+            <option value="55">Berdorf</option>
+            <option value="55">Colmar-Berg</option>
+            <option value="55">Echternach</option>
+            <option value="55">Ell</option>
+            <option value="55">Ettelbrück</option>
+            <option value="55">Manternach</option>
+            <option value="55">Mertert</option>
+            <option value="55">Nommern</option>
+            <option value="55">Préizerdaul</option>
+            <option value="55">Redange-sur-Attert</option>
+            <option value="55">Schieren</option>
+            <option value="55">Useldange</option>
+            <option value="55">Vallée de l'Ernz</option>
+            <option value="55">Vichten</option>
+            <option value="55">Waldbillig</option>
+          </optgroup>
+          <optgroup label="🚗 +75 € de déplacement (> 50 km)">
+            <option value="75">Bettendorf</option>
+            <option value="75">Bourscheid</option>
+            <option value="75">Diekirch</option>
+            <option value="75">Erpeldange-sur-Sûre</option>
+            <option value="75">Feulen</option>
+            <option value="75">Groussbus-Wal</option>
+            <option value="75">Mertzig</option>
+            <option value="75">Rambrouch</option>
+            <option value="75">Reisdorf</option>
+            <option value="75">Rosport-Mompach</option>
+            <option value="75">Tandel</option>
+          </optgroup>
+          <optgroup label="🚗 +95 € de déplacement (> 60 km)">
+            <option value="95">Esch-sur-Sûre</option>
+            <option value="95">Goesdorf</option>
+            <option value="95">Putscheid</option>
+            <option value="95">Vianden</option>
+          </optgroup>
+          <optgroup label="🚗 +115 € de déplacement (> 70 km)">
+            <option value="115">Boulaide</option>
+            <option value="115">Kiischpelt</option>
+            <option value="115">Lac de la Haute-Sûre</option>
+            <option value="115">Parc Hosingen</option>
+            <option value="115">Wiltz</option>
+            <option value="115">Winseler</option>
+          </optgroup>
+          <optgroup label="🚗 +140 € de déplacement (> 80 km)">
+            <option value="140">Clervaux</option>
+            <option value="140">Troisvierges</option>
+            <option value="140">Weiswampach</option>
+            <option value="140">Wincrange</option>
+          </optgroup>
+          <optgroup label="📍 Grande Région — sur devis">
+            <option value="devis-be">🇧🇪 Belgique</option>
+            <option value="devis-fr">🇫🇷 France</option>
+            <option value="devis-de">🇩🇪 Allemagne</option>
+          </optgroup>
+        </select>
+        <div class="deplacement-result" id="depResult"></div>
+      </div>
+
+      <div>
+        <div class="result-card">
+          <span class="result-service" id="resultService">Impression UV</span>
+          <div class="decomp">
+            <div class="decomp-line active-line" id="line1">
+              <span class="dl-label">1er m² (base)</span>
+              <span class="dl-val cyan" id="val1">250 €</span>
+            </div>
+            <div class="decomp-line inactive" id="line2">
+              <span class="dl-label">Tranche 1–3 m²</span>
+              <span class="dl-val" id="val2">— €</span>
+            </div>
+            <div class="decomp-line inactive" id="line3">
+              <span class="dl-label">Tranche 3–10 m²</span>
+              <span class="dl-val" id="val3">— €</span>
+            </div>
+            <div class="decomp-line inactive" id="line4">
+              <span class="dl-label">Au-delà de 10 m²</span>
+              <span class="dl-val" id="val4">— €</span>
+            </div>
+            <div class="decomp-line inactive" id="lineDep">
+              <span class="dl-label" id="depLabel">Déplacement</span>
+              <span class="dl-val" id="valDep">— €</span>
+            </div>
+          </div>
+          <div class="total-divider"></div>
+          <div class="total-row">
+            <div>
+              <span class="total-label">Estimation totale</span>
+              <div class="total-price grad" id="totalPrice"><span class="euro">€</span>250</div>
+            </div>
+            <div style="text-align:right;">
+              <span class="total-label">Prix moyen / m²</span>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--cyan);" id="avgPrice">250 €</div>
+            </div>
+          </div>
+          <p class="total-note" id="totalNote">* Sélectionnez votre commune pour inclure le déplacement.</p>
+        </div>
+        <div class="cta-calc">
+          <a href="/#contact" class="btn-primary">Demander un devis précis →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DÉPLACEMENT TABLE -->
+<div class="section section-dark">
+  <div class="stag reveal">Frais de déplacement</div>
+  <h2 class="reveal d1">VOTRE <span class="cyan">COMMUNE</span>,<br>VOTRE TARIF</h2>
+  <div class="dep-grid reveal d2">
+    <div class="dep-zone z0">
+      <div class="dep-zone-header"><span class="dep-zone-dist">≤ 30 km — depuis Peppange</span><div class="dep-zone-price green">OFFERT</div></div>
+      <div class="dep-zone-towns">Bertrange · Bettembourg · Bous-Waldbredimus · Contern · Dalheim · Differdange · Dippach · Dudelange · Esch-sur-Alzette · Frisange · Garnich · Hesperange · Junglinster · Käerjeng · Kayl · Kehlen · Koerich · Kopstal · Lenningen · Leudelange · Lintgen · Lorentzweiler · Luxembourg-Ville · Mamer · Mondercange · Mondorf-les-Bains · Niederanven · Pétange · Reckange-sur-Mess · Remich · Roeser · Rumelange · Sandweiler · Sanem · Schengen · Schifflange · Schuttrange · Stadtbredimus · Steinfort · Steinsel · Strassen · Walferdange · Weiler-la-Tour</div>
+    </div>
+    <div class="dep-zone z1">
+      <div class="dep-zone-header"><span class="dep-zone-dist">> 30 km</span><div class="dep-zone-price" style="color:var(--cyan);">35 €</div></div>
+      <div class="dep-zone-towns">Bech · Betzdorf · Bissen · Biwer · Consdorf · Fischbach · Flaxweiler · Grevenmacher · Habscht · Heffingen · Helperknapp · Larochette · Mersch · Saeul · Wormeldange</div>
+    </div>
+    <div class="dep-zone z2">
+      <div class="dep-zone-header"><span class="dep-zone-dist">> 40 km</span><div class="dep-zone-price" style="color:var(--cyan);">55 €</div></div>
+      <div class="dep-zone-towns">Beaufort · Beckerich · Berdorf · Colmar-Berg · Echternach · Ell · Ettelbrück · Manternach · Mertert · Nommern · Préizerdaul · Redange-sur-Attert · Schieren · Useldange · Vallée de l'Ernz · Vichten · Waldbillig</div>
+    </div>
+    <div class="dep-zone z3">
+      <div class="dep-zone-header"><span class="dep-zone-dist">> 50 km</span><div class="dep-zone-price orange">75 €</div></div>
+      <div class="dep-zone-towns">Bettendorf · Bourscheid · Diekirch · Erpeldange-sur-Sûre · Feulen · Groussbus-Wal · Mertzig · Rambrouch · Reisdorf · Rosport-Mompach · Tandel</div>
+    </div>
+    <div class="dep-zone z4">
+      <div class="dep-zone-header"><span class="dep-zone-dist">> 60 km</span><div class="dep-zone-price orange">95 €</div></div>
+      <div class="dep-zone-towns">Esch-sur-Sûre · Goesdorf · Putscheid · Vianden</div>
+    </div>
+    <div class="dep-zone z5">
+      <div class="dep-zone-header"><span class="dep-zone-dist">> 70 km</span><div class="dep-zone-price pink">115 €</div></div>
+      <div class="dep-zone-towns">Boulaide · Kiischpelt · Lac de la Haute-Sûre · Parc Hosingen · Wiltz · Winseler</div>
+    </div>
+    <div class="dep-zone z6">
+      <div class="dep-zone-header"><span class="dep-zone-dist">> 80 km</span><div class="dep-zone-price pink">140 €</div></div>
+      <div class="dep-zone-towns">Clervaux · Troisvierges · Weiswampach · Wincrange</div>
+    </div>
+    <div class="dep-zone z8">
+      <div class="dep-zone-header"><span class="dep-zone-dist">Grande Région</span><div class="dep-zone-price" style="color:var(--grey);">Sur devis</div></div>
+      <div class="dep-zone-towns">🇧🇪 Belgique · 🇫🇷 France · 🇩🇪 Allemagne<br>Contactez-nous en indiquant votre ville pour recevoir un devis de déplacement personnalisé.</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMMENT MESURER -->
+<div class="section">
+  <div class="stag reveal">Guide pratique</div>
+  <h2 class="reveal d1">COMMENT <span class="cyan">MESURER</span><br>VOTRE SURFACE ?</h2>
+  <div class="mesure-wrap reveal d2">
+    <div class="mesure-text">
+      <p>Pour tout élément — flèche, texte, logo ou motif — la méthode est toujours la même : <strong style="color:var(--white);">tracez un rectangle imaginaire autour de votre élément</strong> en mesurant de chaque extrémité, comme sur le schéma ci-contre.</p>
+      <ul>
+        <li><strong style="color:var(--white);">Largeur</strong> — mesurez de l'extrémité la plus à gauche à l'extrémité la plus à droite de votre élément.</li>
+        <li><strong style="color:var(--white);">Hauteur</strong> — mesurez du point le plus haut au point le plus bas de votre élément.</li>
+        <li><strong style="color:var(--white);">Surface en m²</strong> — multipliez Largeur (en mètres) × Hauteur (en mètres). C'est ce résultat qui détermine votre tarif.</li>
+        <li>Pour <strong style="color:var(--white);">un texte</strong> : mesurez de la première lettre à la dernière pour la largeur, et de la ligne du haut à la ligne du bas pour la hauteur.</li>
+        <li>Pour <strong style="color:var(--white);">une flèche</strong> : mesurez de l'extrémité gauche jusqu'à la pointe droite pour la largeur, et de la partie la plus haute à la plus basse pour la hauteur.</li>
+      </ul>
+      <div class="min-price-box">
+        <strong>⚠ Prix minimum : 250 €</strong><br>
+        Même si votre surface calculée est inférieure à 1 m², le tarif minimum reste de <strong>250 €</strong> (ou <strong>275 €</strong> pour l'Effet 3D Visuel, ou <strong>315 €</strong> pour l'Effet 3D Relief). Ce montant couvre la préparation du fichier et l'installation.
+      </div>
+    </div>
+
+    <!-- SVG SCHÉMA CORRIGÉ — rectangle collé aux extrémités de la flèche -->
+    <div class="mesure-diagram">
+      <svg viewBox="0 0 440 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:440px;">
+        <rect width="440" height="340" fill="#111111"/>
+
+        <!-- Title -->
+        <text x="220" y="24" text-anchor="middle" fill="rgba(136,136,136,0.7)" font-family="'Barlow Condensed',sans-serif" font-size="11" letter-spacing="2">RECTANGLE DE MESURE (pointillés)</text>
+
+        <!--
+          Flèche : extrémité gauche x=50, extrémité droite x=390
+          Hauteur : corps de flèche de y=145 à y=185, pointe de y=108 à y=222
+          Bounding box exacte : x=50, y=108, width=340, height=114 → x2=390, y2=222
+        -->
+
+        <!-- Dashed bounding box — colle exactement aux extrémités de la flèche -->
+        <rect x="50" y="108" width="340" height="114" fill="none" stroke="#00d4e8" stroke-width="1.5" stroke-dasharray="8,5"/>
+
+        <!-- Flèche (corps + pointe) -->
+        <!-- Corps : de x=50 à x=300, y de 145 à 185 -->
+        <!-- Pointe : de x=300 à x=390, apex à y=165 (centre), base de y=108 à y=222 -->
+        <polygon
+          points="50,145 300,145 300,108 390,165 300,222 300,185 50,185"
+          fill="rgba(232,64,122,0.18)" stroke="#e8407a" stroke-width="2.5" stroke-linejoin="round"/>
+
+        <!-- Corner dots -->
+        <circle cx="50" cy="108" r="4" fill="#00d4e8"/>
+        <circle cx="390" cy="108" r="4" fill="#00d4e8"/>
+        <circle cx="50" cy="222" r="4" fill="#00d4e8"/>
+        <circle cx="390" cy="222" r="4" fill="#00d4e8"/>
+
+        <!-- Corner labels -->
+        <text x="34" y="106" fill="rgba(0,212,232,0.8)" font-family="'Barlow Condensed',sans-serif" font-size="12" font-weight="600">A</text>
+        <text x="394" y="106" fill="rgba(0,212,232,0.8)" font-family="'Barlow Condensed',sans-serif" font-size="12" font-weight="600">B</text>
+        <text x="34" y="235" fill="rgba(0,212,232,0.8)" font-family="'Barlow Condensed',sans-serif" font-size="12" font-weight="600">C</text>
+        <text x="394" y="235" fill="rgba(0,212,232,0.8)" font-family="'Barlow Condensed',sans-serif" font-size="12" font-weight="600">D</text>
+
+        <!-- Width arrow (below) -->
+        <defs>
+          <marker id="aR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#00d4e8"/></marker>
+          <marker id="aL" markerWidth="8" markerHeight="8" refX="1" refY="3" orient="auto-start-reverse"><path d="M0,0 L0,6 L7,3 z" fill="#00d4e8"/></marker>
+        </defs>
+        <line x1="50" y1="258" x2="390" y2="258" stroke="#00d4e8" stroke-width="1.5" marker-start="url(#aL)" marker-end="url(#aR)"/>
+        <text x="220" y="276" text-anchor="middle" fill="#00d4e8" font-family="'Barlow Condensed',sans-serif" font-size="13" letter-spacing="2">LARGEUR (m)</text>
+
+        <!-- Height arrow (right) -->
+        <line x1="415" y1="108" x2="415" y2="222" stroke="#00d4e8" stroke-width="1.5" marker-start="url(#aL)" marker-end="url(#aR)"/>
+        <text x="431" y="169" text-anchor="middle" fill="#00d4e8" font-family="'Barlow Condensed',sans-serif" font-size="13" letter-spacing="2" transform="rotate(90,431,169)">HAUTEUR (m)</text>
+
+        <!-- Formula box -->
+        <rect x="95" y="148" width="250" height="36" fill="rgba(0,212,232,0.07)" rx="2"/>
+        <text x="220" y="163" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="'Barlow Condensed',sans-serif" font-size="9" letter-spacing="1.5">CALCUL DE LA SURFACE</text>
+        <text x="220" y="179" text-anchor="middle" fill="#ffffff" font-family="'Bebas Neue',sans-serif" font-size="17" letter-spacing="2">LARGEUR × HAUTEUR = m²</text>
+
+        <!-- Arrow label -->
+        <text x="220" y="75" text-anchor="middle" fill="rgba(232,64,122,0.85)" font-family="'Barlow Condensed',sans-serif" font-size="11" letter-spacing="1.5">ÉLÉMENT À IMPRIMER (ex : flèche)</text>
+        <!-- Dashed guide line from label to arrow top -->
+        <line x1="220" y1="80" x2="220" y2="105" stroke="rgba(232,64,122,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <!-- Extremity annotations -->
+        <text x="50" y="100" text-anchor="middle" fill="rgba(0,212,232,0.5)" font-family="'Barlow Condensed',sans-serif" font-size="9" letter-spacing="1">Extrémité G</text>
+        <text x="390" y="100" text-anchor="middle" fill="rgba(0,212,232,0.5)" font-family="'Barlow Condensed',sans-serif" font-size="9" letter-spacing="1">Extrémité D</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="section section-dark">
+  <div class="stag reveal">Questions fréquentes</div>
+  <h2 class="reveal d1">TOUT CE QUE VOUS <span class="cyan">VOULEZ SAVOIR</span></h2>
+  <div class="faq-grid reveal d2">
+    <div class="faq-item">
+      <div class="faq-q">Quels sont les frais de déplacement ? <span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Le déplacement est <strong>offert</strong> pour toutes les communes situées à moins de 30 km de Peppange (notre point de départ). Au-delà, un forfait s'applique selon la distance : 35 € (> 30 km) · 55 € (> 40 km) · 75 € (> 50 km) · 95 € (> 60 km) · 115 € (> 70 km) · 140 € (> 80 km). Vous pouvez estimer votre commune directement dans notre calculateur. Pour les interventions en <strong>Grande Région</strong> (Belgique, France, Allemagne), contactez-nous en précisant votre ville et nous vous enverrons un devis de déplacement personnalisé.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Quelle est la différence entre l'Effet 3D Visuel et l'Effet 3D Relief ? <span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>L'<strong>Effet 3D Visuel</strong> crée une illusion de profondeur et de relief grâce au trompe-l'œil — la surface reste parfaitement lisse au toucher. C'est idéal pour les logos en 3D, les murales immersives ou les motifs architecturaux. L'<strong>Effet 3D Relief</strong> va plus loin : l'imprimante réalise plusieurs passages pour superposer des couches d'encre et créer un relief physique réel, perceptible au toucher. C'est une option luxe qui nécessite des fichiers très spécifiques — nous proposons un catalogue dédié d'images compatibles avec ce service.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Les tarifs sont-ils les mêmes pour tous les services ? <span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>L'Impression UV, la Fresque Murale et la Signalétique partagent la même grille tarifaire standard (à partir de 250 €/m²). L'<strong>Effet 3D Visuel</strong> dispose d'une grille légèrement supérieure (à partir de 275 €/m²). L'<strong>Effet 3D Relief</strong> est soumis au tarif premium (à partir de 315 €/m²) en raison des multiples passages d'impression et de la consommation d'encre plus élevée.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Quel est le prix minimum si ma surface est petite ? <span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Même si la surface de votre élément (logo, texte, flèche...) est inférieure à 1 m², le tarif minimum est de <strong>250 €</strong> pour les services standards, <strong>275 €</strong> pour l'Effet 3D Visuel, et <strong>315 €</strong> pour l'Effet 3D Relief. Ce montant couvre la préparation du fichier et l'installation sur site.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Quel est le délai entre le devis et l'installation ? <span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Nous répondons à toute demande sous 24h. Après validation du devis, le délai de production et d'installation est généralement de 5 à 10 jours ouvrables selon la complexité du projet.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-bottom">
+  <div class="cta-glow"></div>
+  <div class="stag reveal" style="justify-content:center;margin-bottom:16px;">Passez à l'action</div>
+  <h2 class="reveal d1">VOTRE PROJET,<br><span class="grad">VOTRE DEVIS</span></h2>
+  <p class="reveal d2">Simulation gratuite · Réponse sous 24h · Déplacement offert au Luxembourg (≤ 30 km)</p>
+  <div class="cta-btns reveal d3">
+    <a href="/#contact" class="btn-primary">Demander un devis gratuit</a>
+    <a href="tel:+352691132192" class="btn-outline">+352 691 132 192</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ftop">
+    <div class="fbrand">
+      <img src="https://cdn.shopify.com/s/files/1/0897/1688/3789/files/Copie_de_Copie_de_Pink_Black_and_White_Grunge_Clothing_Logo_copie.png?v=1777071699" alt="WallXpert" class="flogo" />
+      <p>L'impression murale et au sol haut de gamme au Luxembourg. Transformons vos espaces en œuvres d'exception — depuis 2026.</p>
+    </div>
+    <div class="fcol"><h4>Services</h4><ul><li><a href="/#services">Impression Directe UV</a></li><li><a href="/#services">Signalétique Murale</a></li><li><a href="/#services">Fresque Murale</a></li><li><a href="/#services">Effet 3D & Relief</a></li></ul></div>
+    <div class="fcol"><h4>Secteurs</h4><ul><li><a href="/#secteurs">Bureaux</a></li><li><a href="/#secteurs">Hôtels</a></li><li><a href="/#secteurs">Commerce</a></li><li><a href="/#secteurs">Restaurants</a></li></ul></div>
+    <div class="fcol"><h4>Entreprise</h4><ul><li><a href="/">Accueil</a></li><li><a href="/#about">À Propos</a></li><li><a href="/#galerie">Réalisations</a></li><li><a href="/#contact">Contact</a></li><li><a href="/pages/mentions-legales">Mentions Légales</a></li><li><a href="/pages/politique-de-confidentialite">Confidentialité</a></li></ul></div>
+  </div>
+  <div class="fbot">
+    <p>© 2026 <span>WallXpert</span> Luxembourg — Tous droits réservés.</p>
+    <p>Made with <span>✦</span> in Luxembourg</p>
+  </div>
+</footer>
+
+<script>
+  // Reveal
+  const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target);} }), {threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Hamburger
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open'); hamburger.classList.remove('open'); document.body.style.overflow = '';
+  }));
+
+  // Tabs grille
+  document.querySelectorAll('.stab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-standard').style.display    = tab.dataset.tab === 'standard'   ? '' : 'none';
+      document.getElementById('tab-3d-visuel').style.display   = tab.dataset.tab === '3d-visuel'  ? '' : 'none';
+      document.getElementById('tab-3d-relief').style.display   = tab.dataset.tab === '3d-relief'  ? '' : 'none';
+    });
+  });
+
+  // Calculateur
+  const PRICES = {
+    'standard':  { base: 250, t1: 150, t2: 125, t3: 100 },
+    '3d-visuel': { base: 275, t1: 165, t2: 140, t3: 110 },
+    '3d-relief': { base: 315, t1: 190, t2: 160, t3: 125 }
+  };
+  let currentType = 'standard';
+  let currentDep = null;
+  let currentDepIsDevis = false;
+
+  function calcPrice(m2, type) {
+    const p = PRICES[type];
+    const b = { base: p.base, t1: 0, t2: 0, t3: 0 };
+    let total = p.base;
+    if (m2 > 1) { const t1 = Math.min(m2 - 1, 2); b.t1 = Math.round(t1 * p.t1); total += b.t1; }
+    if (m2 > 3) { const t2 = Math.min(m2 - 3, 7); b.t2 = Math.round(t2 * p.t2); total += b.t2; }
+    if (m2 > 10) { b.t3 = Math.round((m2 - 10) * p.t3); total += b.t3; }
+    return { total: Math.round(total), breakdown: b };
+  }
+
+  function setLine(lineId, valId, amount) {
+    const line = document.getElementById(lineId);
+    document.getElementById(valId).textContent = amount > 0 ? `${amount} €` : '— €';
+    line.classList.toggle('active-line', amount > 0);
+    line.classList.toggle('inactive', amount === 0);
+  }
+
+  function updateCalc() {
+    const m2 = parseFloat(document.getElementById('surfaceSlider').value);
+    document.getElementById('surfaceDisplay').innerHTML = `${m2} <span>m²</span>`;
+    const { total, breakdown } = calcPrice(m2, currentType);
+    const avg = Math.round(total / m2);
+
+    document.getElementById('val1').textContent = `${breakdown.base} €`;
+    setLine('line2', 'val2', breakdown.t1);
+    setLine('line3', 'val3', breakdown.t2);
+    setLine('line4', 'val4', breakdown.t3);
+
+    const lineDep = document.getElementById('lineDep');
+    const valDep  = document.getElementById('valDep');
+    if (currentDepIsDevis) {
+      lineDep.className = 'decomp-line dep-line';
+      valDep.textContent = 'Sur devis'; valDep.className = 'dl-val orange';
+    } else if (currentDep === null) {
+      lineDep.className = 'decomp-line inactive';
+      valDep.textContent = '— €'; valDep.className = 'dl-val';
+    } else if (currentDep === 0) {
+      lineDep.className = 'decomp-line dep-offert-line';
+      valDep.textContent = 'OFFERT'; valDep.className = 'dl-val green';
+    } else {
+      lineDep.className = 'decomp-line dep-line';
+      valDep.textContent = `${currentDep} €`; valDep.className = 'dl-val orange';
+    }
+
+    const depAmount = (currentDepIsDevis || currentDep === null) ? 0 : currentDep;
+    const grandTotal = total + depAmount;
+    document.getElementById('totalPrice').innerHTML = `<span class="euro">€</span>${grandTotal.toLocaleString('fr-FR')}`;
+    document.getElementById('avgPrice').textContent = `${avg} €`;
+    document.getElementById('totalNote').textContent = currentDepIsDevis
+      ? '* Impression uniquement. Contactez-nous pour le déplacement.'
+      : currentDep === null
+        ? '* Sélectionnez votre commune pour inclure le déplacement.'
+        : currentDep === 0
+          ? '* Estimation TTC — déplacement offert pour cette commune !'
+          : '* Estimation TTC déplacement inclus.';
+  }
+
+  document.getElementById('surfaceSlider').addEventListener('input', updateCalc);
+
+  document.getElementById('communeSelect').addEventListener('change', function() {
+    const val = this.value;
+    const result = document.getElementById('depResult');
+    const pays = { 'devis-be': '🇧🇪 Belgique', 'devis-fr': '🇫🇷 France', 'devis-de': '🇩🇪 Allemagne' };
+    if (val === 'none') {
+      currentDep = null; currentDepIsDevis = false; result.innerHTML = '';
+    } else if (pays[val]) {
+      currentDepIsDevis = true; currentDep = null;
+      result.innerHTML = `<span class="dep-payant">📍 ${pays[val]} — Contactez-nous pour un devis de déplacement.</span>`;
+    } else {
+      currentDepIsDevis = false; currentDep = parseInt(val);
+      result.innerHTML = currentDep === 0
+        ? '<span class="dep-offert">✅ Déplacement offert pour cette commune !</span>'
+        : `<span class="dep-payant">🚗 Forfait déplacement : <strong>${currentDep} €</strong></span>`;
+    }
+    updateCalc();
+  });
+
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      currentType = pill.dataset.type;
+      document.getElementById('resultService').textContent = pill.dataset.service;
+      updateCalc();
+    });
+  });
+
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const answer = q.nextElementSibling;
+      const isOpen = answer.classList.contains('open');
+      document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+      document.querySelectorAll('.faq-q').forEach(qq => qq.classList.remove('open'));
+      if (!isOpen) { answer.classList.add('open'); q.classList.add('open'); }
+    });
+  });
+
+  updateCalc();
+</script>
+
+{% schema %}
+{
+  "name": "WallXpert Tarifs",
+  "settings": []
+}
+{% endschema %}
